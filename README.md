@@ -1,1 +1,1 @@
-# discord_bot
+# mafia_and_bunker_discord_bot
