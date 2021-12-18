@@ -277,15 +277,13 @@ async def join_bunker(ctx):
         Функция регистрирует пользователя на игру "Бункер"
         На вход: ctx - инфо пользователя
     """
-    """
-        if ctx.author.id in users_bunker:
+    if ctx.author.id in users_bunker:
         await ctx.send("Вы уже зарегистрированы.")
         return
-        else:
-    """
-    users_bunker.append(ctx.author.id)
-    number_bunker = len(users_bunker)
-    await ctx.send(f"Вы зарегистрировались на игру. Ваш номер {number_bunker}")
+    else:
+        users_bunker.append(ctx.author.id)
+        number_bunker = len(users_bunker)
+        await ctx.send(f"Вы зарегистрировались на игру. Ваш номер {number_bunker}")
 
 @bot.command(name="join_mafia")
 async def join_mafia(ctx):
