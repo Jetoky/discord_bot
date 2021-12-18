@@ -1,5 +1,5 @@
 # coding: utf8
-from discord import channel
+from discord import channel, user
 import config
 import discord
 from typing import List, Dict
@@ -72,7 +72,7 @@ async def Lobby(ctx, arg):
         на вход поступает: ctx - информация о пользователе
         arg - переменная для выбора лобби
         В ответ на команду, пользователь получает сообщения об успешном подключении к лобби
-        команды time.sleep() - отправка сообщений с задержкой
+        команды await asyncio.sleep() - отправка сообщений с задержкой
     """
     member = ctx.message.author
     role_1 = member.guild.get_role(920782582155718687)
@@ -119,6 +119,7 @@ async def add_role(ctx, name, k):
         На вход поступает информация: ctx - инфо о пользователе
         name - название роли
         k - количество ролей
+        В глобальный спискок roles добавляется переменная name
     """
     for i in range(int(k)):
         roles.append(name)
@@ -128,10 +129,11 @@ async def add_role(ctx, name, k):
 async def del_role(ctx, name):
     """
         Функция проверяет и удаляет роли
-        на вход поступает: ctx- инфо пользователя
+        на вход поступает: ctx - инфо пользователя
         name - необходимая роль
         В проверке условия просматривается существует ли указанная роль
         Если роль найдена - она удаляется, выводя сообщение о результате
+        Из глобального списка roles удаляется переменная name
     """
     if name not in roles:
         await ctx.send(f"Роль с именем \"{name}\" не существует.")
@@ -143,6 +145,7 @@ async def del_role(ctx, name):
 async def roles_clear(ctx):
     """
         Функция проверяет, есть ли в массиве ролей сами роли, в случае их наличия - команда удаляет роли
+        Глобальный список roles очищается 
         На вход: ctx - инфо пользователя
     """
     if roles == []:
@@ -155,6 +158,7 @@ async def roles_clear(ctx):
 async def roles_return(ctx):
     """
         Функция выводит весь список присутствующих ролей
+        Вызывается глобальный список roles
         На вход: ctx - инфо пользователя
     """
     await ctx.send(f'Список ролей:\n{roles}')
@@ -163,6 +167,7 @@ async def roles_return(ctx):
 async def users_mafia_clear(ctx):
     """
         Функция проверяет наличие ролей в игре "Мафия"
+        Глобальный список users_mafia очищается
         На вход: ctx - инфо пользователя
     """
     if users_mafia == []:
@@ -175,6 +180,7 @@ async def users_mafia_clear(ctx):
 async def users_bunker_clear(ctx):
     """
         Функция проверяет наличие ролей в игре "Бункер"
+        Глобальный список users_bunker очищается
         На вход: ctx - инфо пользователя
     """
     if users_bunker == []:
@@ -187,6 +193,9 @@ async def users_bunker_clear(ctx):
 async def mafia_stop(ctx):
     """
         Функция Завершает игру "Мафия"
+        Глобальный список roles очищается
+        Глобальный список users_mafia очищается
+        Удаляется папка 'mafia' со всеми файлами из директории, в которой находится бота 
         На вход: ctx - инфо пользователя
     """
     shutil.rmtree(f"{path}/mafia/")
@@ -200,6 +209,8 @@ async def mafia_stop(ctx):
 async def bunker_stop(ctx):
     """
         Функция завершает игру "Бункер" и очищает список игроков
+        Глобальный список users_bunker очищается
+        Удаляется папка 'bunker' со всеми файлами из директории, в которой находится бота
         На вход: ctx - инфо пользователя
     """
     shutil.rmtree(f"{path}/bunker/")
@@ -254,12 +265,11 @@ async def party_bunker(ctx):
         Функция выводит список игроков
         На вход: ctx - инфо пользователя
     """
-    l = users_bunker
-    if not l:
+    if not users_bunker:
         await ctx.send("Игроков нет")
         return
     content = "Список игроков:\n" + "\n".join(
-        [f"<@{user}>" for user in l]
+        [f"<@{user}>" for user in users_bunker]
     )
     await ctx.send(content)
 
@@ -269,12 +279,11 @@ async def party_mafia(ctx):
         Функция проверяет наличие игроков в игре "Мафия"
         На вход: ctx - инфо пользователя
     """
-    l = users_mafia
-    if not l:
+    if not users_mafia:
         await ctx.send("Игроков нет")
         return
     content = "Список игроков:\n" + "\n".join(
-        [f"<@{user}>" for user in l]
+        [f"<@{user}>" for user in users_mafia]
     )
     await ctx.send(content)
 
@@ -282,6 +291,7 @@ async def party_mafia(ctx):
 async def join_bunker(ctx):
     """
         Функция регистрирует пользователя на игру "Бункер"
+        В глобальный список users_bunker добавляется ник игрока в дискорде
         На вход: ctx - инфо пользователя
     """
     if ctx.author.id in users_bunker:
@@ -296,6 +306,7 @@ async def join_bunker(ctx):
 async def join_mafia(ctx):
     """
         Функция регистрирует пользователя на игру "Мафия"
+        В глобальный список users_mafia добавляется ник игрока в дискорде
         На вход: ctx - инфо пользователя
     """
     if ctx.author.id in users_mafia:
@@ -311,7 +322,9 @@ async def play_bunker(ctx):
     """
         Функция запускает игру "Бункер" и выдает пользователю сообщение о запуске игры.
         На вход: ctx - инфо пользователя
-        В цикле для каждого пользователя создается и высылается отдельный файл с информацией для игры
+        В директории бота создается папка /bunker/. В данной папке открывается файл BabyFile.txt, а также создаются файлы 1.txt, 2.txt. 
+        В созданные файлы добавляется информация из BabyFile.txt
+        В цикле для каждого пользователя высылается отдельный файл с информацией для игры
     """
     await ctx.send(
         'Да начнётся игра! Сейчас будут отправлены файлы с вашими игровыми персонажами.(Для более интересной игры не подсматривайте)')
@@ -340,7 +353,9 @@ async def play_mafia(ctx):
     """
         Функция запускает игру "Мафия" и выдает пользователю сообщение о запуске игры.
         На вход: ctx - инфо пользователя
-        В цикле для каждого пользователя создается и высылается отдельный файл с информацией для игры
+        В директории, в которой расположен бот, создается папка /mafia/. В ней создаютсся файлы 1.txt, 2.txt... 
+        В созданные файлы добавляется информация из переменной roles
+        В цикле для каждого пользователя высылается отдельный файл с информацией для игры
     """
     if is_admin == False:
         await ctx.send('Игру может запустить только админ.')
