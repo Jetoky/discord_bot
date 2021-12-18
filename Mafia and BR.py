@@ -291,15 +291,13 @@ async def join_mafia(ctx):
         Функция регистрирует пользователя на игру "Мафия"
         На вход: ctx - инфо пользователя
     """
-    """
-        if ctx.author.id in users_mafia:
+    if ctx.author.id in users_mafia:
         await ctx.send("Вы уже зарегистрированы.")
         return
-        else:
-    """
-    users_mafia.append(ctx.author.id)
-    number_mafia = len(users_mafia)
-    await ctx.send(f"Вы зарегистрировались на игру. Ваш номер {number_mafia}")
+    else:
+        users_mafia.append(ctx.author.id)
+        number_mafia = len(users_mafia)
+        await ctx.send(f"Вы зарегистрировались на игру. Ваш номер {number_mafia}")
 
 @bot.command(Pass_context=True)
 async def play_bunker(ctx):
