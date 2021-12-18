@@ -11,6 +11,7 @@ from file_creator import create
 from docx import Document
 import os
 import shutil
+import asyncio
 
 
 #Импортируем модули для работы с помощью библиотеки pip
@@ -79,28 +80,28 @@ async def Lobby(ctx, arg):
 
     if arg == '1':
         await ctx.send('Подключение к лобби 1.')
-        time.sleep(1)
+        await asyncio.sleep(1)
         await ctx.send('Успешно подключен к Лобби 1')
         role_1 = member.guild.get_role(920782582155718687)
         await member.add_roles(role_1)
 
     if arg == '2':
         await ctx.send('Подключение к лобби 2.')
-        time.sleep(1)
+        await asyncio.sleep(1)
         await ctx.send('Успешно подключен к Лобби_2')
         role_2 = member.guild.get_role(920782624681758760)
         await member.add_roles(role_2)
 
     if arg == '3':
         await ctx.send('Подключение к лобби 3.')
-        time.sleep(1)
+        await asyncio.sleep(1)
         await ctx.send('Успешно подключен к Лобби_3')
         role_3 = member.guild.get_role(920782656449421322)
         await member.add_roles(role_3)
 
     if arg == '4':
         await ctx.send('Подключение к лобби 4.')
-        time.sleep(1)
+        await asyncio.sleep(1)
         await ctx.send('Успешно подключен к Лобби_4')
         role_4 = member.guild.get_role(920782656449421322)
         await member.add_roles(role_4)
@@ -217,14 +218,14 @@ async def remove_roles(ctx, arg):
 
     if arg == '1':
         await ctx.send('Отключение от Лобби...')
-        time.sleep(1)
+        await asyncio.sleep(1)
         role_1 = member.guild.get_role(920782582155718687)  # id роли которую будет получать юзер
         await member.add_roles(role_1)
         await ctx.send('Успешно подключен к Лобби_' + str(arg) + '.')
 
     if arg == '2':
         await ctx.send('Отключение от Лобби...')
-        time.sleep(1)
+        await asyncio.sleep(1)
         role_1 = member.guild.get_role(920782624681758760)  # id роли которую будет получать юзер
         await member.add_roles(role_1)
         await ctx.send('Успешно подключен к Лобби_' + str(arg) + '.')
@@ -316,7 +317,7 @@ async def play_bunker(ctx):
 
     h = 1
     while h < len(users_bunker) + 1:
-        time.sleep(0.5)
+        await asyncio.sleep(0.5)
         create()
         with open(f"{b}/{h}.docx", 'w') as document_bunker:
             document_bunker = Document()
@@ -337,20 +338,20 @@ async def play_mafia(ctx):
     """
     if is_admin == False:
         await ctx.send('Игру может запустить только админ.')
-        time.sleep(0.5)
+        await asyncio.sleep(0.5)
     if len(users_mafia) <= 0:
         await ctx.send('Игроков слишком мало для начала игры!')
-        time.sleep(0.5)
+        await asyncio.sleep(0.5)
         return
     if len(roles) == 0:
         await ctx.send('Роли не добавлены, добавьте их через команду *!add_role* ')
-        time.sleep(0.5)
+        await asyncio.sleep(0.5)
         return
     if len(users_mafia) != len(roles):
         await ctx.send('Количество ролей не совпадает с количеством игроков')
         await ctx.send(party_mafia)
         await ctx.send(roles_return)
-        time.sleep(0.5)
+        await asyncio.sleep(0.5)
         return
     try:
         os.makedirs(f"{path}/mafia")
@@ -370,4 +371,5 @@ async def play_mafia(ctx):
     await ctx.send('Начнем поиски мафии!')
 
 
-bot.run(config.TOKEN)
+if __name__ == '__main__':
+    bot.run(config.TOKEN)
