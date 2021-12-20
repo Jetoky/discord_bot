@@ -16,3 +16,4 @@ python-docx==0.8.11
 toml==0.10.2
 typing-extensions==4.0.1
 yarl==1.7.2
+pytest-asyncio==0.16.0
