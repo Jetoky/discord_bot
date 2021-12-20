@@ -198,7 +198,10 @@ async def mafia_stop(ctx):
         Удаляется папка 'mafia' со всеми файлами из директории, в которой находится бота 
         На вход: ctx - инфо пользователя
     """
-    shutil.rmtree(f"{path}/mafia/")
+    try:
+        shutil.rmtree(f"{path}/mafia/")
+    except:
+        pass
     roles.clear()
     await ctx.send('Список ролей успешно очищен!')
     users_mafia.clear()
@@ -213,7 +216,10 @@ async def bunker_stop(ctx):
         Удаляется папка 'bunker' со всеми файлами из директории, в которой находится бота
         На вход: ctx - инфо пользователя
     """
-    shutil.rmtree(f"{path}/bunker/")
+    try:
+        shutil.rmtree(f"{path}/bunker/")
+    except:
+        pass
     users_bunker.clear()
     await ctx.send('Список игроков в бункер успешно очищен!')
 
